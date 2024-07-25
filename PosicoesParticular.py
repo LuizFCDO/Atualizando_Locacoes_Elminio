@@ -11,5 +11,9 @@ cord = {'cigo atalho':(45,337), # Cigo - Atalho
         'alt empr prod':(121,869), # Alterar empresa produto 
         'grup alt empr prod':(280,322), # Alterando empresa produto, grupo
         'cancel alt empr prod':(45,287), # Cancelar, dentro de alterar empresa produto
-        'adic empr prod':(119,849) # Adicionar empresa produto
+        'adic empr prod':(119,849), # Adicionar empresa produto
+        'loc estoq 4 cat':(771,197), # Dentro de Local do Estoque, selecionar categoria na quarta pesquisa
+        'lupa loc estoq':(919,210), # Lupa de Local do Estoque
+        'alt loc estoq':(57,305), # Alterar Local do Estoque
+        'nome alt loc estoq':(326,228), # Nome em alterar em local do estoque 
         }
