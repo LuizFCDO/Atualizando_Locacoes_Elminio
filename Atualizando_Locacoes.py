@@ -7,9 +7,85 @@ from Funcoes_Atualizando_Locacoes import *
 
 fechandoAreaRemota()
 
-############################## Começando automação ###################################################################
+############################## Recebendo dados do usuário ###################################################################
 
-grupo = janelaInput() # Abre janela para coletar o grupo de peças a ser corrigido nas 3 lojas
+conf = True
+while conf:
+    inicioLoc = janelaInput('Locação de Início', 'Digite a locação a partir da qual se realizará o processo: ') # Recebendo locação inicial do processo
+    fimLoc = janelaInput('Locação Final', 'Digite a locação final do processo: ') # Recebendo locação final do processo
+
+    # Fazendo tratamento de dados quanto as locações recebidas
+    inicioLoc = inicioLoc.replace(' ','').upper() # Retirando todos os espaços e deixando tudo em maiúsculo
+    fimLoc = fimLoc.replace(' ','').upper() # Retirando todos os espaços e deixando tudo em maiúsculo
+
+    if inicioLoc[:5] != fimLoc[:5]: # Garantindo que a locação final e a inicial possuem o mesmo setor e mesma rua(corredor)
+        pat.alert('As locações final e inicial devem ser do mesmo setor e da mesma rua!')
+    else:
+        conf = False
+
+intervaloLoc = [inicioLoc, fimLoc] # Garantindo que a locação inicial e final estejam na ordem certa
+intervaloLoc.sort()
+
+conf = True
+while conf: # Looping para input do maior valor de andar(prateleira) da operação
+    prateleiraMax = janelaInput('Maior Andar', 'Qual é o andar de maior número entre todos os andares que terão algum apartamento passando pela operação? ')
+
+    # Fazendo tratamento de dados quanto as locações recebidas
+    prateleiraMax = prateleiraMax.strip() # Retirando todos os espaços
+
+    if prateleiraMax.isalpha(): # Confirmando que é um número e não uma letra
+        pat.alert('O valor de prateleira deve ser numérico!')
+    else:
+        conf = False
+
+conf = True
+while conf: # Looping para input do maior valor de apartamento(local) da operação
+    localMax = janelaInput('Última Letra de Apartamento','Qual é o apartamento com a última letra do alfabeto entre todos os que passarão pela operação? ')
+    
+    # Fazendo tratamento de dados quanto as locações recebidas
+    localMax = localMax.strip().upper() # Retirando todos os espaços
+
+    if localMax.isnumeric(): # Confirmando que é uma letra e não um número
+        pat.alert('O valor de local deve ser alfabético!')
+    else:
+        conf = False
+
+
+########################################### Criando Lista de Locações ##############################################################
+
+letraNumero = {'A':1, 'B':2, 'C':3, 'D':4, 'E':5, 'F':6, 'G':7, 'H':8, 'I':9, 'J':10, 'K':11, 'L':12, 'M':13, # Dicionário correspondendo cada letra a um número
+               'N':14, 'O':15, 'P':16, 'Q':17, 'R':18, 'S':19, 'T':20, 'U':21, 'V':22, 'W':23, 'X':24, 'Y':25, 'Z':26}
+numeroLetra = {letraNumero[chave]:chave for chave in letraNumero} # Dicionário correspondendo cada número a uma letra
+numeroNumero = {num:'0'+str(num) for num in range(0,10)} # Dicionário para passar números com um único algarismo para strings iniciadas por '0'
+
+locacoes = [] # A lista contendo todas as locações a serem atualizadas
+setor = intervaloLoc[0][:3] # Armazenando o setor das locações
+corredor = intervaloLoc[0][3:5] # Armazenando o corredor(rua) das locações
+estanteIni = intervaloLoc[0][5] # Armazenando a estante(edifício) da locação inicial
+estanteFim = intervaloLoc[1][5] # Armazenando a estante(edifício) da locação final
+prateleiraIni = intervaloLoc[0][6:8] # Armazenando a prateleira(andar) da locação inicial
+prateleiraFim = intervaloLoc[1][6:8] # Armazenando a prateleira(andar) da locação final
+localIni = intervaloLoc[0][8] # Armazenando o local(apartamento) da locação inicial 
+localFim = intervaloLoc[1][8] # Armazenando o local(apartamento) da locação final
+
+for estante in range(letraNumero[estanteIni], letraNumero[estanteFim]+1):
+    if estante == letraNumero[estanteFim]:
+        prateleiraMax = prateleiraFim
+
+    for prateleira in range(int(prateleiraIni), int(prateleiraMax)+1):
+        if prateleira == int(prateleiraFim) and estante == letraNumero[estanteFim]:
+            localMax = localFim
+
+        for local in range(letraNumero[localIni], letraNumero[localMax]+1):
+            if prateleira in range(0,10):
+                locacoes.append(setor + ' ' + corredor + numeroLetra[estante] + ' ' + numeroNumero[prateleira] + numeroLetra[local])
+            else:
+                locacoes.append(setor + ' ' + corredor + numeroLetra[estante] + ' ' + str(prateleira) + numeroLetra[local])
+        
+        localIni = 'A'
+    prateleiraIni = 1
+
+########################################### Iniciando Automação ###################################################################
 
 pat.alert('O código vai começar, não toque no teclado ou no mouse enquanto isso!') # Manda alerta na tela com o texto 
 
@@ -19,3 +95,12 @@ fechandoApps() # Fecha no máximo 4 coisas abertas na area remota
 
 abrindoCigoELogin() # Abrindo sistema cigo e fazendo o login
 time.sleep(5)
+
+abrindoLocalDoEstoque()
+
+for loc in locacoes:
+    pesquisandoLocalDoEstoque(loc.replace(' ','%'))
+    time.sleep(1)
+    atualizandoLocacao(loc)
+
+pat.alert('Fim da operação!')
