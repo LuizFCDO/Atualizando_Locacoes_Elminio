@@ -20,6 +20,10 @@ while conf:
 
     if inicioLoc[:5] != fimLoc[:5]: # Garantindo que a locação final e a inicial possuem o mesmo setor e mesma rua(corredor)
         pat.alert('As locações final e inicial devem ser do mesmo setor e da mesma rua!')
+    elif len(inicioLoc) < 9 or len(fimLoc) < 9: # Garantindo que locação final e inicial estejam no formato adequado
+        pat.alert('Locação de início ou locação final em formato errado, digite novamente!')
+    elif not(inicioLoc[:2].isalpha() or fimLoc[:2].isalpha() or inicioLoc[2:5].isnumeric() or fimLoc[2:5].isnumeric() or inicioLoc[5].isalpha() or fimLoc[5].isalpha() or inicioLoc[6:8].isnumeric() or fimLoc[6:8].isnumeric() or inicioLoc[8].isalpha() or fimLoc[8].isalpha()):
+        pat.alert('Locação de início ou locação final em formato errado, digite novamente!') # Garantindo que locação final e inicial estejam no formato adequado
     else:
         conf = False
 
@@ -28,25 +32,29 @@ intervaloLoc.sort()
 
 conf = True
 while conf: # Looping para input do maior valor de andar(prateleira) da operação
-    prateleiraMax = janelaInput('Maior Andar', 'Qual é o andar de maior número entre todos os andares que terão algum apartamento passando pela operação? ')
+    prateleiraMax = janelaInput('Maior Andar', 'Qual é o andar(prateleira) de maior número entre todos os andares que terão algum apartamento passando pela operação? ')
 
     # Fazendo tratamento de dados quanto as locações recebidas
     prateleiraMax = prateleiraMax.strip() # Retirando todos os espaços
 
-    if prateleiraMax.isalpha(): # Confirmando que é um número e não uma letra
+    if prateleiraMax.isalpha(): # Confirmando que não é um valor vazio e que é um número e não uma letra
         pat.alert('O valor de prateleira deve ser numérico!')
+    elif prateleiraMax == '':
+        pat.alert('O valor de prateleira não deve ser vazio!')
     else:
         conf = False
 
 conf = True
 while conf: # Looping para input do maior valor de apartamento(local) da operação
-    localMax = janelaInput('Última Letra de Apartamento','Qual é o apartamento com a última letra do alfabeto entre todos os que passarão pela operação? ')
+    localMax = janelaInput('Última Letra de Apartamento','Qual é o apartamento(local) com a última letra do alfabeto entre todos os que passarão pela operação? ')
     
     # Fazendo tratamento de dados quanto as locações recebidas
     localMax = localMax.strip().upper() # Retirando todos os espaços
 
-    if localMax.isnumeric(): # Confirmando que é uma letra e não um número
+    if localMax.isnumeric(): # Confirmando que não é um valor vazio e que é uma letra e não um número
         pat.alert('O valor de local deve ser alfabético!')
+    elif localMax == '':
+        pat.alert('O valor de local não deve ser vazio!')
     else:
         conf = False
 
@@ -68,7 +76,7 @@ prateleiraFim = intervaloLoc[1][6:8] # Armazenando a prateleira(andar) da locaç
 localIni = intervaloLoc[0][8] # Armazenando o local(apartamento) da locação inicial 
 localFim = intervaloLoc[1][8] # Armazenando o local(apartamento) da locação final
 
-for estante in range(letraNumero[estanteIni], letraNumero[estanteFim]+1):
+for estante in range(letraNumero[estanteIni], letraNumero[estanteFim]+1): # Criando lista com todas as locações desde locação inicial até locação final
     if estante == letraNumero[estanteFim]:
         prateleiraMax = prateleiraFim
 
@@ -96,11 +104,12 @@ fechandoApps() # Fecha no máximo 4 coisas abertas na area remota
 abrindoCigoELogin() # Abrindo sistema cigo e fazendo o login
 time.sleep(5)
 
-abrindoLocalDoEstoque()
+abrindoLocalDoEstoque() # Abrindo Local do Estoque no sistema
 
-for loc in locacoes:
+for loc in locacoes: # Atualizando cada locação da lista de locações
     pesquisandoLocalDoEstoque(loc.replace(' ','%'))
     time.sleep(1)
     atualizandoLocacao(loc)
+    time.sleep(1)
 
-pat.alert('Fim da operação!')
+pat.alert('Fim da operação!') # Indicando o fim da operação

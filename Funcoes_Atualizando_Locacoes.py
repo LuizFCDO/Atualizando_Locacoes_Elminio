@@ -82,9 +82,11 @@ def abrindoLocalDoEstoque():
 def pesquisandoLocalDoEstoque(locacao, pesquisa=True):
     pat.moveTo(cord['loc estoq 4 cat'])
     pat.click()
+    time.sleep(0.2)
     pat.press('n')
+    time.sleep(0.2)
     if pesquisa == True:
-        pat.write(locacao, interval=0.25)
+        pat.write(locacao, interval=0.1)
         pat.moveTo(cord['lupa loc estoq'])
         pat.click()
 
@@ -95,7 +97,7 @@ def atualizandoLocacao(locacao:str):
     pat.moveTo(cord['nome alt loc estoq'])
     pat.click()
     time.sleep(0.5)
-    pat.write(locacao, interval=0.2)
+    pat.write(locacao, interval=0.1)
     pat.press('f5')
     time.sleep(0.5)
 
