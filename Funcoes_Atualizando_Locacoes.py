@@ -39,13 +39,14 @@ def janelaInput(titulo:str, texto:str):
 pat.PAUSE = 0.5
 pat.MINIMUM_DURATION = 0.25
 
-dataParaSalvamento = time.strftime("%d %m %Y", time.localtime())
-
-empr = {
-    'elm' : 'ELMINIO',
-    'soc' : 'SOCORRO',
-    'wag' : 'WAGNER'
-}
+def locCorreta(loc:str):
+    if len(loc) < 9: # Garantindo que locação final e inicial estejam no formato adequado
+        pat.alert('Locação em formato errado, digite novamente!')
+        return True
+    elif not(loc[:2].isalpha() and loc[2:5].isnumeric() and loc[5].isalpha() and loc[6:8].isnumeric() and loc[8].isalpha()):
+        pat.alert('Locação em formato errado, digite novamente!') # Garantindo que locação final e inicial estejam no formato adequado
+        return True
+    return False
 
 def abrindoAreaRemota():
     # Abrindo a área de trabalho remota
